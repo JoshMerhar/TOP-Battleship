@@ -15,3 +15,11 @@ test('Ship gets hit', () => {
     testShip.hit(1);
     expect(testShip.positions[1]).toBe('hit');
 });
+
+test('Ship sinks when all positions are hit', () => {
+    const testShip = Ship(3);
+    testShip.hit(0);
+    testShip.hit(1);
+    testShip.hit(2);
+    expect(testShip.isSunk()).toBe(true);
+});
