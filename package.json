@@ -1,0 +1,20 @@
+{
+  "name": "top-battleship",
+  "version": "1.0.0",
+  "description": "An implementation of TOP's Battleship project. This project also serves as TDD practice.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^6.8.1",
+    "jest": "^29.7.0",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
