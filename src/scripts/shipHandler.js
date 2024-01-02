@@ -1,6 +1,7 @@
-const Ship = (shipLength) => {
+const Ship = (shipName, shipLength) => {
+    const name = shipName;
     const length = shipLength;
-    let positions = [...Array(shipLength).keys()];
+    const positions = [...Array(shipLength).keys()];
 
     const hit = (shot) => {
         if (positions[shot] !== 'hit') positions.splice(shot, 1, 'hit');
@@ -17,7 +18,7 @@ const Ship = (shipLength) => {
         return false;
     };
 
-    return { length, positions, hit, isSunk };
+    return { name, length, positions, hit, isSunk };
 }
 
 module.exports = Ship;
