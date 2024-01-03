@@ -18,8 +18,6 @@ const Gameboard = (() => {
     const boardSpaces = buildBoard();
 
     const allShips = [];
-    
-    const allShipPositions = [];
 
     function placeShip(shipName, length, boardSpace, axis) {
         const rootIndex = boardSpaces.indexOf(boardSpace);
@@ -36,12 +34,52 @@ const Gameboard = (() => {
         } else {
             shipPositions = boardSpaces.slice(rootIndex, rootIndex + ship.length);
         }
-        allShipPositions.push(...shipPositions);
-        allShips.push({'ship' : ship, 'positions' : shipPositions});
+        if (checkValidity(shipPositions, axis)) {
+            updatePositions(ship, shipPositions);
+            allShips.push(ship);
+        } else {
+            return shipPositions = [];
+        }
         return shipPositions;
     }
 
-    return { boardSpaces, placeShip };
+    function checkValidity(shipPositions, axis) {
+        const positions = shipPositions;
+        const firstSpace = positions[0];
+        const lastSpace = positions[positions.length - 1];
+        if (axis === 'xAxis') {
+            if (firstSpace[0] !== lastSpace[0]) return false;
+            return true;
+        } 
+        if (axis === 'yAxis') {
+            if (firstSpace[1] !== lastSpace[1]) return false;
+            return true;
+        }
+    }
+
+    function updatePositions(ship, shipPositions) {
+        for (let i = 0; i < ship.length; i++) {
+            ship.positions[i] = shipPositions[i];
+        }
+    }
+
+    const missedShots = [];
+
+    function receiveAttack(boardSpace) {
+        allShips.forEach(ship => {
+            const positions = ship.positions;
+            positions.forEach(position => {
+                if (boardSpace === position) {
+                    const spaceIndex = positions.indexOf(boardSpace);
+                    return ship.hit(spaceIndex);
+                } else {
+                    return missedShots.push(boardSpace);
+                }
+            }); 
+        });
+    }
+
+    return { boardSpaces, allShips, placeShip, missedShots, receiveAttack };
 })();
 
 module.exports = Gameboard;

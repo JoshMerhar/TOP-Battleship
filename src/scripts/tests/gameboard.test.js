@@ -11,3 +11,14 @@ test('Gameboard places carrier ship on xAxis', () => {
 test('Gameboard places submarine on yAxis', () => {
     expect(Gameboard.placeShip('submarine', 3, 'F4', 'yAxis')).toEqual(['F4','G4','H4']);
 });
+
+test('Gameboard rejects invalid placement', () => {
+    expect(Gameboard.placeShip('battleship', 4, 'A8', 'xAxis')).toEqual([]);
+})
+
+test('Successful hit on a ship', () => {
+    Gameboard.placeShip('destroyer', 2, 'A1', 'xAxis');
+    const ship = Gameboard.allShips[2];
+    Gameboard.receiveAttack('A1');
+    expect(ship.positions[0]).toBe('hit');
+});
