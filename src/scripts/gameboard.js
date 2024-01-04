@@ -28,13 +28,14 @@ const Gameboard = (() => {
             let indexOffset = 0;
             for (let i = 0; i < ship.length; i++) {
                 let spaceIndex = rootIndex + indexOffset;
+                if (spaceIndex > 99) break;
                 shipPositions.push(boardSpaces[spaceIndex]);
                 indexOffset += 10;
             }
         } else {
             shipPositions = boardSpaces.slice(rootIndex, rootIndex + ship.length);
         }
-        if (checkValidity(shipPositions, axis)) {
+        if (checkValidity(ship, shipPositions, axis)) {
             updatePositions(ship, shipPositions);
             allShips.push(ship);
         } else {
@@ -43,16 +44,16 @@ const Gameboard = (() => {
         return shipPositions;
     }
 
-    function checkValidity(shipPositions, axis) {
+    function checkValidity(ship, shipPositions, axis) {
         const positions = shipPositions;
         const firstSpace = positions[0];
         const lastSpace = positions[positions.length - 1];
         if (axis === 'xAxis') {
-            if (firstSpace[0] !== lastSpace[0]) return false;
+            if (firstSpace[0] !== lastSpace[0] || positions.length !== ship.length) return false;
             return true;
         } 
         if (axis === 'yAxis') {
-            if (firstSpace[1] !== lastSpace[1]) return false;
+            if (firstSpace[1] !== lastSpace[1] || positions.length !== ship.length) return false;
             return true;
         }
     }
@@ -64,22 +65,33 @@ const Gameboard = (() => {
     }
 
     const missedShots = [];
+    const hitShots = [];
 
     function receiveAttack(boardSpace) {
+        let hit = false;
         allShips.forEach(ship => {
             const positions = ship.positions;
-            positions.forEach(position => {
-                if (boardSpace === position) {
+            for (let i = 0; i < positions.length; i++) {
+                if (boardSpace === positions[i]) {
+                    hit = true;
+                    hitShots.push(boardSpace);
                     const spaceIndex = positions.indexOf(boardSpace);
                     return ship.hit(spaceIndex);
-                } else {
-                    return missedShots.push(boardSpace);
                 }
-            }); 
+            }
         });
+        if (!hit) missedShots.push(boardSpace);
     }
 
-    return { boardSpaces, allShips, placeShip, missedShots, receiveAttack };
+    function allShipsSunk() {
+        let sunkShips = 0;
+        allShips.forEach(ship => {
+            if (ship.isSunk()) sunkShips++;
+        });
+        if (sunkShips === allShips.length) return true;
+    }
+
+    return { boardSpaces, allShips, placeShip, missedShots, receiveAttack, allShipsSunk };
 })();
 
 module.exports = Gameboard;
