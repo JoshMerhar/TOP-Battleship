@@ -1,6 +1,6 @@
 const Ship = require('../scripts/shipHandler');
 
-const Gameboard = (() => {
+const Gameboard = () => {
     
     function buildBoard() {
         const board = [];
@@ -64,6 +64,7 @@ const Gameboard = (() => {
         }
     }
 
+    const allShots = [];
     const missedShots = [];
     const hitShots = [];
 
@@ -81,6 +82,7 @@ const Gameboard = (() => {
             }
         });
         if (!hit) missedShots.push(boardSpace);
+        allShots.push(boardSpace);
     }
 
     function allShipsSunk() {
@@ -91,7 +93,7 @@ const Gameboard = (() => {
         if (sunkShips === allShips.length) return true;
     }
 
-    return { boardSpaces, allShips, placeShip, missedShots, receiveAttack, allShipsSunk };
-})();
+    return { boardSpaces, allShips, placeShip, allShots, missedShots, hitShots, receiveAttack, allShipsSunk };
+}
 
 module.exports = Gameboard;
