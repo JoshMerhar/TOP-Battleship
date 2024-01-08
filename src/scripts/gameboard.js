@@ -68,7 +68,7 @@ const Gameboard = () => {
     const missedShots = [];
     const hitShots = [];
 
-    function receiveAttack(boardSpace) {
+    function receiveAttack(boardSpace) { 
         let hit = false;
         allShips.forEach(ship => {
             const positions = ship.positions;
