@@ -11,7 +11,10 @@ const domHandler = (() => {
                 const space = document.createElement('div');
                 space.classList.add('board-space');
                 space.id = boardIdChar + boardSpaces[j + offset];
-                space.addEventListener('click', registerAttack);
+                if (boardName === 'computer-board') {
+                    space.classList.add('computer-board');
+                    space.addEventListener('click', registerAttack);
+                }
                 row.appendChild(space);
             }
             offset += 10;
@@ -54,7 +57,14 @@ const domHandler = (() => {
         });
     }
 
-    return { renderBoard, renderPlayerShips, updateBoard };
+    function clearBoards() {
+        const playerBoard = document.getElementById('player-board');
+        const computerBoard = document.getElementById('computer-board');
+        playerBoard.innerHTML = '';
+        computerBoard.innerHTML = '';
+    }
+
+    return { renderBoard, renderPlayerShips, updateBoard, clearBoards };
 })();
 
 module.exports = domHandler;

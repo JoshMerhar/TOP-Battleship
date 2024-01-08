@@ -3,34 +3,45 @@ const Player = require('../scripts/player');
 const domHandler = require('../scripts/domHandler');
 
 const Game = (() => {
-
-    const player = Player();
-    const computer = Player();
-    const playerBoard = Gameboard();
-    const computerBoard = Gameboard();
-
-    playerBoard.placeShip('carrier', 5, 'G5', 'xAxis');
-    playerBoard.placeShip('battleship', 4, 'B4', 'yAxis');
-    playerBoard.placeShip('cruiser', 3, 'D7', 'xAxis');
-    playerBoard.placeShip('submarine', 3, 'H2', 'yAxis');
-    playerBoard.placeShip('destroyer', 2, 'A1', 'xAxis');
-
-    computerBoard.placeShip('carrier', 5, 'B3', 'xAxis');
-    computerBoard.placeShip('battleship', 4, 'C2', 'yAxis');
-    computerBoard.placeShip('cruiser', 3, 'C7', 'xAxis');
-    computerBoard.placeShip('submarine', 3, 'H3', 'yAxis');
-    computerBoard.placeShip('destroyer', 2, 'A1', 'xAxis');
-
-    domHandler.renderBoard(playerBoard.boardSpaces, 'player-board');
-    domHandler.renderBoard(computerBoard.boardSpaces, 'computer-board');
-
-    domHandler.renderPlayerShips(playerBoard.allShips);
-
-    console.log(playerBoard.allShips);
-    console.log(computerBoard.allShips);
+    
+    let player = '';
+    let computer = '';
+    let playerBoard = '';
+    let computerBoard = '';
 
     let gameOver = false;
     let turnNumber = 1;
+    
+    function newGame() {
+        domHandler.clearBoards();
+
+        player = Player();
+        computer = Player();
+        playerBoard = Gameboard();
+        computerBoard = Gameboard();
+
+        playerBoard.autoPlaceShip('carrier', 5);
+        playerBoard.autoPlaceShip('battleship', 4);
+        playerBoard.autoPlaceShip('cruiser', 3);
+        playerBoard.autoPlaceShip('submarine', 3);
+        playerBoard.autoPlaceShip('destroyer', 2);
+
+        computerBoard.autoPlaceShip('carrier', 5);
+        computerBoard.autoPlaceShip('battleship', 4);
+        computerBoard.autoPlaceShip('cruiser', 3);
+        computerBoard.autoPlaceShip('submarine', 3);
+        computerBoard.autoPlaceShip('destroyer', 2);
+
+        domHandler.renderBoard(playerBoard.boardSpaces, 'player-board');
+        domHandler.renderBoard(computerBoard.boardSpaces, 'computer-board');
+        domHandler.renderPlayerShips(playerBoard.allShips);
+
+        console.log(playerBoard.allShips);
+        console.log(computerBoard.allShips);
+
+        gameOver = false;
+        turnNumber = 1;
+    }
 
     function playGame(attack) {
         if (gameOver === false) {
@@ -38,11 +49,9 @@ const Game = (() => {
                 const boardSpace = attack;
                 player.pickSpace(boardSpace, computerBoard);
                 domHandler.updateBoard(computerBoard, 'c');
-                console.log(computerBoard.missedShots);
             } else {
                 computer.autoPickSpace(playerBoard);
                 domHandler.updateBoard(playerBoard, 'p');
-                console.log(playerBoard.missedShots);
             }
             if (computerBoard.allShipsSunk() || playerBoard.allShipsSunk()) gameOver = true;
         }
@@ -62,7 +71,7 @@ const Game = (() => {
         return winner;
     }
 
-    return { playGame };
+    return { newGame, playGame };
 })();
 
 module.exports = Game;
