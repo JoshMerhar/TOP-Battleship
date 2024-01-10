@@ -1,4 +1,5 @@
 const Ship = require('../scripts/shipHandler');
+const domHandler = require('./domHandler');
 
 const Gameboard = () => {
     
@@ -114,12 +115,21 @@ const Gameboard = () => {
                     hit = true;
                     hitShots.push(boardSpace);
                     const spaceIndex = positions.indexOf(boardSpace);
-                    return ship.hit(spaceIndex);
+                    ship.hit(spaceIndex);
+                    domHandler.displayHit(boardSpace);
+                    checkShipStatus(ship);
                 }
             }
         });
-        if (!hit) missedShots.push(boardSpace);
+        if (!hit) {
+            missedShots.push(boardSpace);
+            domHandler.displayMiss(boardSpace);
+        }
         allShots.push(boardSpace);
+    }
+
+    function checkShipStatus(ship) {
+        if (ship.isSunk()) domHandler.displaySunkShip(ship.name);
     }
 
     function allShipsSunk() {

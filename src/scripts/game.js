@@ -49,17 +49,19 @@ const Game = (() => {
                 const boardSpace = attack;
                 player.pickSpace(boardSpace, computerBoard);
                 domHandler.updateBoard(computerBoard, 'c');
+                domHandler.coverBoard();
             } else {
                 computer.autoPickSpace(playerBoard);
                 domHandler.updateBoard(playerBoard, 'p');
             }
             if (computerBoard.allShipsSunk() || playerBoard.allShipsSunk()) gameOver = true;
         }
-        if (gameOver) {
-            return checkWinner(playerBoard, computerBoard);
-        }
+        if (gameOver) return checkWinner(playerBoard, computerBoard);
         turnNumber++;
-        if (turnNumber % 2 === 0 && !gameOver) playGame('');
+        if (turnNumber % 2 === 0 && !gameOver) {
+            setTimeout(() => {playGame('')}, 1250);
+            setTimeout(() => domHandler.revealBoard(), 1250);
+        }
         return;
     }
 
@@ -67,8 +69,8 @@ const Game = (() => {
         let winner = '';
         if (computerBoard.allShipsSunk()) winner = 'You win!';
         if (playerBoard.allShipsSunk()) winner = 'The AI overlords win...';
-        console.log(winner);
-        return winner;
+        domHandler.revealBoard();
+        return domHandler.displayWinner(winner);
     }
 
     return { newGame, playGame };

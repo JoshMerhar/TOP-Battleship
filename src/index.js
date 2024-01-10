@@ -5,4 +5,4 @@ const domHandler = require('./scripts/domHandler');
 const newGameButton = document.getElementById('new-game');
 newGameButton.addEventListener('click', Game.newGame);
 
-Game.newGame();
+domHandler.renderDummyBoards();

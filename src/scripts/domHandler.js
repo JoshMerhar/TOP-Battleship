@@ -22,6 +22,27 @@ const domHandler = (() => {
         }
     }
 
+    function renderDummyBoards() {
+        const playerBoard = document.getElementById('player-board');
+        const computerBoard = document.getElementById('computer-board');
+        for (let i = 0; i < 10; i++) {
+            const playerRow = playerBoard.appendChild(document.createElement('div'));
+            const computerRow = computerBoard.appendChild(document.createElement('div'));
+            playerRow.classList.add('board-row');
+            computerRow.classList.add('board-row');
+            for (let j = 0; j < 10; j++) {
+                const playerSpace = document.createElement('div');
+                const computerSpace = document.createElement('div');
+                playerSpace.classList.add('board-space');
+                computerSpace.classList.add('board-space');
+                playerRow.appendChild(playerSpace);
+                computerRow.appendChild(computerSpace);
+            }
+            playerBoard.appendChild(playerRow);
+            computerBoard.appendChild(computerRow);
+        }
+    }
+
     function renderPlayerShips(ships) {
         ships.forEach(ship => {
             const positions = ship.positions;
@@ -60,11 +81,48 @@ const domHandler = (() => {
     function clearBoards() {
         const playerBoard = document.getElementById('player-board');
         const computerBoard = document.getElementById('computer-board');
+        const message = document.getElementById('action-message');
         playerBoard.innerHTML = '';
         computerBoard.innerHTML = '';
+        message.textContent = 'Sink all enemy ships to win';
+    }
+    
+    function displayMiss(shot) {
+        const message = document.getElementById('action-message');
+        message.textContent = `${shot}... Miss.`
     }
 
-    return { renderBoard, renderPlayerShips, updateBoard, clearBoards };
+    function displayHit(shot) {
+        const message = document.getElementById('action-message');
+        message.textContent = `${shot}... It's a hit!`;
+    }
+
+    function displaySunkShip(shipName) {
+        const message = document.getElementById('action-message');
+        message.textContent = `The ${shipName} has been obliterated!`;
+    }
+    
+    function displayWinner(winner) {
+        const message = document.getElementById('action-message');
+        message.textContent = winner;
+    }
+
+    // Disables enemy board so player can't spam fire shots
+    function coverBoard() {
+        const container = document.getElementById('container');
+        const cover = document.createElement('div');
+        cover.classList.add('board-cover');
+        cover.id = 'board-cover';
+        container.appendChild(cover);
+    }
+
+    // Enables enemy board during player's turn
+    function revealBoard() {
+        const cover = document.getElementById('board-cover');
+        cover.remove();
+    }
+
+    return { renderBoard, renderDummyBoards, renderPlayerShips, updateBoard, clearBoards, displayMiss, displayHit, displaySunkShip, displayWinner, coverBoard, revealBoard };
 })();
 
 module.exports = domHandler;
