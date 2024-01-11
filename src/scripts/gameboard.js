@@ -73,7 +73,7 @@ const Gameboard = () => {
         else axis = 'yAxis';
         pickedSpaces.push([shipRoot, axis]);
 
-        // I know this looks like a ridiculous amount of redundancy, but I promice it isn't
+        // I know this looks like a ridiculous amount of redundancy, but I promise it isn't
         if (pickedSpaces.length === 1) placeShip('carrier', 5, shipRoot, axis);
         if (pickedSpaces.length === 1) domHandler.displayMessage('Place your battleship - 4 spaces');
         if (pickedSpaces.length === 2) placeShip('battleship', 4, shipRoot, axis);
