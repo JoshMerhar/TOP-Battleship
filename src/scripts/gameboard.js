@@ -41,10 +41,54 @@ const Gameboard = () => {
             updatePositions(ship, shipPositions);
             allShips.push(ship);
         } else {
+            if (pickedSpaces.length > 0) pickedSpaces.pop();
             return shipPositions = [];
         }
         allPositions.push(...shipPositions);
         return shipPositions;
+    }
+
+    // Enables players to position ships on their own board
+    function activatePlacement() {
+        const playerSpaces = document.querySelectorAll('#player-board .board-space');
+        playerSpaces.forEach(space => space.addEventListener('click', pickShipSpace));
+        playerSpaces.forEach(space => space.classList.add('computer-board'));
+    }
+
+    // Disables player's board after all ships have been placed
+    function deactivatePlacement() {
+        const playerSpaces = document.querySelectorAll('#player-board .board-space');
+        playerSpaces.forEach(space => space.removeEventListener('click', pickShipSpace));
+        playerSpaces.forEach(space => space.classList.remove('computer-board'));
+    }
+
+    const pickedSpaces = [];
+    function pickShipSpace(event) {
+        let shipRoot = event.target.id;
+        shipRoot = shipRoot.slice(1);
+
+        let axis = '';
+        const displayedAxis = document.getElementById('display-axis');
+        if (displayedAxis.textContent === 'Current axis: X axis') axis = 'xAxis';
+        else axis = 'yAxis';
+        pickedSpaces.push([shipRoot, axis]);
+
+        // I know this looks like a ridiculous amount of redundancy, but I promice it isn't
+        if (pickedSpaces.length === 1) placeShip('carrier', 5, shipRoot, axis);
+        if (pickedSpaces.length === 1) domHandler.displayMessage('Place your battleship - 4 spaces');
+        if (pickedSpaces.length === 2) placeShip('battleship', 4, shipRoot, axis);
+        if (pickedSpaces.length === 2) domHandler.displayMessage('Place your cruiser - 3 spaces');
+        if (pickedSpaces.length === 3) placeShip('cruiser', 3, shipRoot, axis);
+        if (pickedSpaces.length === 3) domHandler.displayMessage('Place your submarine - 3 spaces');
+        if (pickedSpaces.length === 4) placeShip('submarine', 3, shipRoot, axis);
+        if (pickedSpaces.length === 4) domHandler.displayMessage('Place your destroyer - 2 spaces');
+        if (pickedSpaces.length === 5) placeShip('destroyer', 2, shipRoot, axis);
+        if (pickedSpaces.length === 5) domHandler.displayMessage('Sink all enemy ships to win!');
+        if (pickedSpaces.length === 5) {
+            domHandler.hideAxisButton();
+            deactivatePlacement();
+        }
+        domHandler.renderPlayerShips(allShips);
     }
 
     function autoPlaceShip(shipName, length) {
@@ -140,7 +184,19 @@ const Gameboard = () => {
         if (sunkShips === allShips.length) return true;
     }
 
-    return { boardSpaces, allShips, placeShip, autoPlaceShip, allShots, missedShots, hitShots, receiveAttack, allShipsSunk };
+    return { 
+        boardSpaces, 
+        allShips, 
+        activatePlacement,
+        deactivatePlacement,
+        placeShip, 
+        autoPlaceShip, 
+        allShots, 
+        missedShots, 
+        hitShots, 
+        receiveAttack, 
+        allShipsSunk 
+    };
 }
 
 module.exports = Gameboard;

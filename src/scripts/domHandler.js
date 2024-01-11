@@ -43,6 +43,43 @@ const domHandler = (() => {
         }
     }
 
+    function showAxisButton() {
+        const axisButton = document.getElementById('toggle-axis');
+        axisButton.style.display = 'block';
+        axisButton.addEventListener('click', changeAxis);
+
+        const buttonContainer = document.querySelector('.button-container');
+        const displayAxis = document.createElement('div');
+        displayAxis.id = 'display-axis';
+        if (xAxis) displayAxis.textContent = 'Current axis: X axis';
+        else displayAxis.textContent = 'Current axis: Y axis';
+        buttonContainer.appendChild(displayAxis);
+
+        const newGameButton = document.getElementById('new-game');
+        newGameButton.style.display = 'none';
+    }
+
+    function hideAxisButton() {
+        const axisButton = document.getElementById('toggle-axis');
+        axisButton.style.display = 'none'; 
+
+        const displayAxis = document.getElementById('display-axis');
+        displayAxis.remove();
+
+        const newGameButton = document.getElementById('new-game');
+        newGameButton.style.display = 'block';
+    }
+
+    let xAxis = true;
+    function changeAxis() {
+        if (xAxis) xAxis = false;
+        else xAxis = true;
+
+        const displayedAxis = document.getElementById('display-axis');
+        if (xAxis) displayedAxis.textContent = 'Current axis: X axis';
+        else displayedAxis.textContent = 'Current axis: Y axis';
+    }
+
     function renderPlayerShips(ships) {
         ships.forEach(ship => {
             const positions = ship.positions;
@@ -87,6 +124,11 @@ const domHandler = (() => {
         message.textContent = 'Sink all enemy ships to win';
     }
     
+    function displayMessage(customMessage) {
+        const message = document.getElementById('action-message');
+        message.textContent = customMessage;
+    }
+
     function displayMiss(shot) {
         const message = document.getElementById('action-message');
         message.textContent = `${shot}... Miss.`
@@ -122,7 +164,22 @@ const domHandler = (() => {
         cover.remove();
     }
 
-    return { renderBoard, renderDummyBoards, renderPlayerShips, updateBoard, clearBoards, displayMiss, displayHit, displaySunkShip, displayWinner, coverBoard, revealBoard };
+    return { 
+        renderBoard, 
+        renderDummyBoards, 
+        showAxisButton, 
+        hideAxisButton, 
+        renderPlayerShips, 
+        updateBoard, 
+        clearBoards, 
+        displayMessage, 
+        displayMiss, 
+        displayHit, 
+        displaySunkShip, 
+        displayWinner, 
+        coverBoard, 
+        revealBoard 
+    };
 })();
 
 module.exports = domHandler;

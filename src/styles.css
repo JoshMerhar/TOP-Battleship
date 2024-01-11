@@ -22,6 +22,7 @@ body {
 
 #action-message {
     font-size: 36px;
+    padding: 15px 0px;
 }
 
 .board-container {
@@ -100,7 +101,19 @@ body {
     background-color: darkgray;
 }
 
-#new-game {
+#display-axis {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.button {
     border: 4px solid whitesmoke;
     background-color: darkslategray;
     border-radius: 5px;
@@ -108,15 +121,21 @@ body {
     font-weight: bold;
     margin: 25px auto;
     padding: 5px 10px;
+    transition: .15s;
 }
 
-#new-game:hover {
+.button:hover {
     cursor: pointer;
+    transform: scale(1.2);
+    border-radius: 20px;
+}
+
+#toggle-axis {
+    display: none;
 }
 
 .board-cover {
     position: fixed;
-    z-index: 1;
     height: 100%;
     width: 100%;
 }

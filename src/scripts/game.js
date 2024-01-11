@@ -20,24 +20,19 @@ const Game = (() => {
         playerBoard = Gameboard();
         computerBoard = Gameboard();
 
-        playerBoard.autoPlaceShip('carrier', 5);
-        playerBoard.autoPlaceShip('battleship', 4);
-        playerBoard.autoPlaceShip('cruiser', 3);
-        playerBoard.autoPlaceShip('submarine', 3);
-        playerBoard.autoPlaceShip('destroyer', 2);
+        domHandler.renderBoard(playerBoard.boardSpaces, 'player-board');
+        domHandler.renderBoard(computerBoard.boardSpaces, 'computer-board');
+        
+        domHandler.displayMessage('Player - place your ships');
+        domHandler.showAxisButton();
+        playerBoard.activatePlacement();
+        setTimeout(() => domHandler.displayMessage('Place your carrier - 5 spaces'), 2000);
 
         computerBoard.autoPlaceShip('carrier', 5);
         computerBoard.autoPlaceShip('battleship', 4);
         computerBoard.autoPlaceShip('cruiser', 3);
         computerBoard.autoPlaceShip('submarine', 3);
         computerBoard.autoPlaceShip('destroyer', 2);
-
-        domHandler.renderBoard(playerBoard.boardSpaces, 'player-board');
-        domHandler.renderBoard(computerBoard.boardSpaces, 'computer-board');
-        domHandler.renderPlayerShips(playerBoard.allShips);
-
-        console.log(playerBoard.allShips);
-        console.log(computerBoard.allShips);
 
         gameOver = false;
         turnNumber = 1;
@@ -59,7 +54,7 @@ const Game = (() => {
         if (gameOver) return checkWinner(playerBoard, computerBoard);
         turnNumber++;
         if (turnNumber % 2 === 0 && !gameOver) {
-            setTimeout(() => {playGame('')}, 1250);
+            setTimeout(() => playGame(''), 1250);
             setTimeout(() => domHandler.revealBoard(), 1250);
         }
         return;
