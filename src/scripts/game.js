@@ -22,6 +22,7 @@ const Game = (() => {
 
         domHandler.renderBoard(playerBoard.boardSpaces, 'player-board');
         domHandler.renderBoard(computerBoard.boardSpaces, 'computer-board');
+        domHandler.coverEnemyBoard();
         
         domHandler.displayMessage('Player - place your ships');
         domHandler.showAxisButton();

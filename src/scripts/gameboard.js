@@ -86,6 +86,7 @@ const Gameboard = () => {
         if (pickedSpaces.length === 5) domHandler.displayMessage('Sink all enemy ships to win!');
         if (pickedSpaces.length === 5) {
             domHandler.hideAxisButton();
+            domHandler.revealEnemyBoard();
             deactivatePlacement();
         }
         domHandler.renderPlayerShips(allShips);

@@ -164,6 +164,19 @@ const domHandler = (() => {
         cover.remove();
     }
 
+    function coverEnemyBoard() {
+        const container = document.getElementById('container');
+        const cover = document.createElement('div');
+        cover.classList.add('placing-ships-cover');
+        cover.id = 'placing-ships-cover';
+        container.appendChild(cover);
+    }
+
+    function revealEnemyBoard() {
+        const cover = document.getElementById('placing-ships-cover');
+        cover.remove();
+    }
+
     return { 
         renderBoard, 
         renderDummyBoards, 
@@ -178,7 +191,9 @@ const domHandler = (() => {
         displaySunkShip, 
         displayWinner, 
         coverBoard, 
-        revealBoard 
+        revealBoard,
+        coverEnemyBoard,
+        revealEnemyBoard
     };
 })();
 
