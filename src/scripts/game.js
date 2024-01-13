@@ -46,7 +46,11 @@ const Game = (() => {
                 player.pickSpace(boardSpace, computerBoard);
                 domHandler.updateBoard(computerBoard, 'c');
                 domHandler.coverBoard();
-            } else {
+            } else if (turnNumber % 2 === 0 && playerBoard.hitShots.length > 0) {
+                computer.smartPickSpace(playerBoard);
+                domHandler.updateBoard(playerBoard, 'p');
+            } 
+            else {
                 computer.autoPickSpace(playerBoard);
                 domHandler.updateBoard(playerBoard, 'p');
             }

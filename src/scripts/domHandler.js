@@ -151,17 +151,14 @@ const domHandler = (() => {
 
     // Disables enemy board so player can't spam fire shots
     function coverBoard() {
-        const container = document.getElementById('container');
-        const cover = document.createElement('div');
-        cover.classList.add('board-cover');
-        cover.id = 'board-cover';
-        container.appendChild(cover);
+        const cover = document.getElementById('board-cover');
+        cover.style.display = 'block';
     }
 
     // Enables enemy board during player's turn
     function revealBoard() {
         const cover = document.getElementById('board-cover');
-        cover.remove();
+        cover.style.display = 'none';
     }
 
     function coverEnemyBoard() {
