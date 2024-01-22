@@ -24,32 +24,84 @@ const Player = () => {
         const prevShots = playerBoard.allShots;
         const lastHit = prevHits[prevHits.length - 1];
         const hitIndex = playerSpaces.indexOf(lastHit);
-        const nextShots = [];
-        
-        if (nextShots.length === 0) {
-            let leftSpace = hitIndex - 1;
-            let rightSpace = hitIndex + 1;
-            let upSpace = hitIndex - 10;
-            let downSpace = hitIndex + 10;
+        let nextShots = findAdjacentSpaces(playerSpaces, hitIndex);
 
-            leftSpace = playerSpaces[leftSpace];
-            rightSpace = playerSpaces[rightSpace];
-            upSpace = playerSpaces[upSpace];
-            downSpace = playerSpaces[downSpace];
+        const shipFound = isShipFound(playerSpaces, prevHits, hitIndex);
 
-            if (leftSpace && leftSpace[leftSpace.length - 1] !== '0') nextShots.push(leftSpace);
-            if (rightSpace && rightSpace[rightSpace.length - 1] !== '1') nextShots.push(rightSpace);
-            if (upSpace) nextShots.push(upSpace);
-            if (downSpace) nextShots.push(downSpace);
+        let nextShot = '';
+        if (shipFound) {
+            const nextToLastHit = prevHits[prevHits.length - 2];
+            const nextToLastIndex = playerSpaces.indexOf(nextToLastHit);
+            nextShot = calculateNextShot(lastHit, nextToLastIndex, playerSpaces, prevShots, shipFound);
+            if (nextShot !== '') nextShots.push(nextShot);
         }
 
-        const filteredNextShots = nextShots.filter(shot => !prevShots.includes(shot));
+        if (shipFound && nextShot !== '') nextShots = [nextShots.pop()];
+        else nextShots = nextShots.filter(shot => !prevShots.includes(shot));
+        console.log(nextShots);
         
-        if (filteredNextShots.length > 1) {
-            const nextShotIndex = Math.floor(Math.random() * filteredNextShots.length);
-            playerBoard.receiveAttack(filteredNextShots[nextShotIndex]);
-        } else if (filteredNextShots.length === 1) playerBoard.receiveAttack(filteredNextShots[0]);
+        if (nextShots.length > 1) {
+            const nextShotIndex = Math.floor(Math.random() * nextShots.length);
+            playerBoard.receiveAttack(nextShots[nextShotIndex]);
+        } else if (nextShots.length === 1) playerBoard.receiveAttack(nextShots[0]);
         else autoPickSpace(playerBoard);
+    }
+
+    function findAdjacentSpaces(playerSpaces, hitIndex) {
+        const nextShots = [];
+        let leftSpace = hitIndex - 1;
+        let rightSpace = hitIndex + 1;
+        let upSpace = hitIndex - 10;
+        let downSpace = hitIndex + 10;
+
+        leftSpace = playerSpaces[leftSpace];
+        rightSpace = playerSpaces[rightSpace];
+        upSpace = playerSpaces[upSpace];
+        downSpace = playerSpaces[downSpace];
+
+        if (leftSpace && leftSpace[leftSpace.length - 1] !== '0') nextShots.push(leftSpace);
+        if (rightSpace && rightSpace[rightSpace.length - 1] !== '1') nextShots.push(rightSpace);
+        if (upSpace) nextShots.push(upSpace);
+        if (downSpace) nextShots.push(downSpace);
+
+        return nextShots;
+    }
+
+    function isShipFound(playerSpaces, prevHits, hitIndex) {
+        const nextToLastHit = prevHits[prevHits.length - 2];
+        const nextToLastIndex = playerSpaces.indexOf(nextToLastHit);
+        let shipFound = false;
+        if (prevHits.length > 1) {
+            if (hitIndex === nextToLastIndex - 1 || hitIndex === nextToLastIndex + 1 || hitIndex === nextToLastIndex - 10 || hitIndex === nextToLastIndex + 10) {
+                shipFound = true;
+                console.log(shipFound);
+            }
+        }
+        return shipFound;
+    }
+
+    function calculateNextShot(lastHit, nextToLastIndex, playerSpaces, prevShots, shipFound) {
+        const hitIndex = playerSpaces.indexOf(lastHit);
+        let nextShot = '';
+        if (shipFound) {
+            if (hitIndex === nextToLastIndex - 1) nextShot = playerSpaces[hitIndex - 1];
+            else if (hitIndex === nextToLastIndex + 1) nextShot = playerSpaces[hitIndex + 1];
+            else if (hitIndex === nextToLastIndex - 10) nextShot = playerSpaces[hitIndex - 10];
+            else if (hitIndex === nextToLastIndex + 10) nextShot = playerSpaces[hitIndex + 10];
+            console.log(nextShot);
+        } else if (lastHit !== prevShots[prevShots.length - 1]) {
+            if (hitIndex - nextToLastIndex === 1) nextShot = playerSpaces[nextToLastIndex - 1];
+            else if (hitIndex - nextToLastIndex === -1) nextShot = playerSpaces[nextToLastIndex + 1];
+            else if(hitIndex - nextToLastIndex === 10) nextShot = playerSpaces[nextToLastIndex - 10];
+            else if(hitIndex - nextToLastIndex === -10) nextShot = playerSpaces[nextToLastIndex + 10];
+            console.log(nextShot);
+            console.log('hi');
+        }
+        for (let i = 0; i < prevShots.length; i++) {
+            if (prevShots[i] === nextShot) nextShot = '';
+        }
+
+        return nextShot;
     }
 
     return { pickSpace, autoPickSpace, smartPickSpace }
