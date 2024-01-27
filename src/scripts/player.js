@@ -26,7 +26,7 @@ const Player = () => {
         const hitIndex = playerSpaces.indexOf(lastHit);
         let nextShots = findAdjacentSpaces(playerSpaces, hitIndex);
 
-        const shipFound = isShipFound(playerSpaces, prevHits, hitIndex);
+        const shipFound = isShipFound(playerSpaces, prevHits, hitIndex, playerBoard);
 
         let nextShot = '';
         if (shipFound) {
@@ -67,7 +67,7 @@ const Player = () => {
         return nextShots;
     }
 
-    function isShipFound(playerSpaces, prevHits, hitIndex) {
+    function isShipFound(playerSpaces, prevHits, hitIndex, playerBoard) {
         const nextToLastHit = prevHits[prevHits.length - 2];
         const nextToLastIndex = playerSpaces.indexOf(nextToLastHit);
         let shipFound = false;
@@ -77,29 +77,54 @@ const Player = () => {
                 console.log(shipFound);
             }
         }
+        if (isShipSunk(playerBoard)) shipFound = false;
         return shipFound;
     }
 
+    let sunkShips = 0;
+    function isShipSunk(playerBoard) {
+        let newSunkShips = 0;
+        const playerShips = playerBoard.allShips;
+        playerShips.forEach(ship => {
+            let shipSunk = false;
+            for (let i = 0; i < ship.length; i++) {
+                if (ship[i] !== 'hit') {
+                    shipSunk = false;
+                    break;
+                } else shipSunk = true;
+            }
+            if (shipSunk) newSunkShips++;
+        })
+        if (newSunkShips > sunkShips) {
+            sunkShips = newSunkShips;
+            return true;
+        }
+    }
+
+    // Still need to work on backtracking shots, but it's gotten a little better
     function calculateNextShot(lastHit, nextToLastIndex, playerSpaces, prevShots, shipFound) {
         const hitIndex = playerSpaces.indexOf(lastHit);
         let nextShot = '';
-        if (shipFound) {
-            if (hitIndex === nextToLastIndex - 1) nextShot = playerSpaces[hitIndex - 1];
-            else if (hitIndex === nextToLastIndex + 1) nextShot = playerSpaces[hitIndex + 1];
-            else if (hitIndex === nextToLastIndex - 10) nextShot = playerSpaces[hitIndex - 10];
-            else if (hitIndex === nextToLastIndex + 10) nextShot = playerSpaces[hitIndex + 10];
-            console.log(nextShot);
-        } else if (lastHit !== prevShots[prevShots.length - 1]) {
+        if (shipFound && lastHit !== prevShots[prevShots.length - 1]) {
             if (hitIndex - nextToLastIndex === 1) nextShot = playerSpaces[nextToLastIndex - 1];
             else if (hitIndex - nextToLastIndex === -1) nextShot = playerSpaces[nextToLastIndex + 1];
             else if(hitIndex - nextToLastIndex === 10) nextShot = playerSpaces[nextToLastIndex - 10];
             else if(hitIndex - nextToLastIndex === -10) nextShot = playerSpaces[nextToLastIndex + 10];
-            console.log(nextShot);
+            else nextShot = '';
             console.log('hi');
         }
+        else if (shipFound) {
+            if (hitIndex === nextToLastIndex - 1) nextShot = playerSpaces[hitIndex - 1];
+            else if (hitIndex === nextToLastIndex + 1) nextShot = playerSpaces[hitIndex + 1];
+            else if (hitIndex === nextToLastIndex - 10) nextShot = playerSpaces[hitIndex - 10];
+            else if (hitIndex === nextToLastIndex + 10) nextShot = playerSpaces[hitIndex + 10];
+            else nextShot = '';
+        } 
         for (let i = 0; i < prevShots.length; i++) {
             if (prevShots[i] === nextShot) nextShot = '';
         }
+        if (!nextShot) nextShot = '';
+        console.log(nextShot);
 
         return nextShot;
     }
